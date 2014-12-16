@@ -1,0 +1,3 @@
+^\s+0x1010,$
+const\sWORD\s(encoding_\w\w)\[\]\s=			void \1(unsigned*Screen_ptr)
+(0x\w\w\w\w),?						*Screen_ptr++=\1;\n
