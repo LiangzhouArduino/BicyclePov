@@ -126,7 +126,7 @@ void displayNum(unsigned rowNum)
 void POV() {
   static unsigned charCounter;
   displayNum(colList[charCounter]);
-  counter++;
+  charCounter++;
   if(charCounter >= charCount){
     charCounter=0;
   }
