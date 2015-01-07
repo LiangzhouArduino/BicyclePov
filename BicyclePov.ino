@@ -1,0 +1,156 @@
+#include <SimpleTimer.h>
+
+#define PIN_COUNT  16
+
+//define pin
+int pinRow[PIN_COUNT] = {
+  2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+};
+//const int pinHall = 18;
+
+// (\w{2})H.{1,3}(\w{2})H,?     0x\1\2,
+// display array
+unsigned colList[] = {
+ 0x0030
+,0x0380
+,0x0030
+,0x00e0
+,0x0060
+,0x0060
+,0x00c0
+,0x0060
+,0x00e0
+,0x0060
+,0x01c0
+,0x0030
+,0x0380
+,0x0030
+,0x0060
+,0x0060
+,0x0060
+,0x00c0
+,0x0060
+,0x00e0
+,0x0060
+,0x01c0
+,0x0030
+,0x0380
+,0x0030
+,0x0060
+,0x00e0
+,0x0060
+,0x00c0
+,0x0060
+,0x00e0
+,0x0060
+,0x0180
+,0x0030
+,0x0380
+,0x0030
+,0x0060
+,0x00e0
+,0x0070
+,0x00c0
+,0x0060
+,0x00c0
+,0x0060
+,0x0180
+,0x0030
+,0x0180
+,0x0030
+,0x0060
+,0x00c0
+,0x0070
+,0x00c0
+,0x0060
+,0x00c0
+,0x0060
+,0x0380
+,0x0030
+,0x0180
+,0x0030
+,0x0060
+,0x00c0
+,0x0030
+,0x00c0
+,0x0060
+,0x00c0
+,0x0060
+,0x0380
+,0x0030
+,0x0180
+,0x0030
+,0x0060
+,0x00c0
+,0x0030
+,0x01c0
+,0x0060
+,0x01c0
+,0x0060
+,0x0380
+,0x0030
+,0x0180
+,0x0030
+,0x0060
+,0x00c0
+,0x0030
+,0x01c0
+,0x0060
+,0x01c0
+,0x0060
+,0x0380
+,0x0030
+,0x01c0
+};
+int charCount=0;
+
+SimpleTimer timer;
+
+void displayNum(unsigned rowNum)
+{
+  int i;
+  unsigned mask = 0x8000;
+  //Serial.println(rowNum);
+  for(i=0;i<16;i++)
+  {
+    if((mask & rowNum) != 0){
+      digitalWrite(pinRow[i], HIGH);
+    }else{
+      digitalWrite(pinRow[i], LOW);
+    }
+    mask = mask>>1;
+  }
+}
+
+// function to be called repeatedly
+void POV() {
+  static unsigned charCounter;
+  displayNum(colList[charCounter]);
+  counter++;
+  if(charCounter >= charCount){
+    charCounter=0;
+  }
+}
+
+void setup() {
+  //Serial.begin(9600);
+  //
+  //  // welcome message
+  // timed actions setup
+  charCount = sizeof(colList) / sizeof(colList[0]);
+  
+  timer.setInterval(1, POV);
+
+  int i = 0 ;
+  for(i=0;i<16;i++)
+  {
+    pinMode(pinRow[i], OUTPUT);
+    digitalWrite(pinRow[i], LOW);
+  }
+}
+
+void loop() {
+  // this is where the "polling" occurs
+  timer.run();
+}
+
